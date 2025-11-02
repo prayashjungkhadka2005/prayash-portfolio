@@ -1,33 +1,50 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 export default function Navbar() {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [activeSection, setActiveSection] = useState("home");
+  const rafRef = useRef<number | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
-      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = (window.scrollY / totalHeight) * 100;
-      setScrollProgress(progress);
+      // Cancel previous animation frame if exists
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+      }
 
-      // Update active section based on scroll position
-      const sections = ["home", "about", "experience", "skills", "projects", "contact"];
-      for (const section of sections) {
-        const element = document.getElementById(section);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          if (rect.top <= 100 && rect.bottom >= 100) {
-            setActiveSection(section);
-            break;
+      // Use requestAnimationFrame for smooth, optimized updates
+      rafRef.current = requestAnimationFrame(() => {
+        const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = (window.scrollY / totalHeight) * 100;
+        setScrollProgress(progress);
+
+        // Update active section based on scroll position
+        const sections = ["home", "about", "experience", "skills", "projects", "contact"];
+        for (const section of sections) {
+          const element = document.getElementById(section);
+          if (element) {
+            const rect = element.getBoundingClientRect();
+            if (rect.top <= 100 && rect.bottom >= 100) {
+              setActiveSection(section);
+              break;
+            }
           }
         }
-      }
+      });
     };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    // Initial call
+    handleScroll();
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+      }
+    };
   }, []);
 
   const navItems = [
@@ -44,8 +61,11 @@ export default function Navbar() {
       {/* Scroll Progress Bar - On Top of Toolbar */}
       <div className="fixed bottom-14 sm:bottom-16 left-0 right-0 h-1 bg-transparent z-[70] pointer-events-none">
         <div
-          className="h-full bg-gradient-to-r from-primary via-accent to-primary transition-all duration-300 shadow-lg"
-          style={{ width: `${scrollProgress}%` }}
+          className="h-full bg-gradient-to-r from-primary via-accent to-primary shadow-lg"
+          style={{ 
+            width: `${scrollProgress}%`,
+            transition: 'width 0.1s ease-out'
+          }}
         />
       </div>
 
