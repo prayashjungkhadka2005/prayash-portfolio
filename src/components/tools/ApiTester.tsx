@@ -117,13 +117,13 @@ export default function ApiTester({ onClose }: ApiTesterProps) {
   return (
       <div className="backdrop-blur-xl bg-white/95 dark:bg-warm-dark/95 border-t border-primary/30 dark:border-secondary/30 shadow-2xl rounded-t-3xl max-h-[650px] flex flex-col">
         {/* Fixed Header */}
-        <div className="p-4 sm:p-8 pb-3 sm:pb-4 flex-shrink-0">
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg sm:text-xl font-bold text-foreground flex items-center gap-2 sm:gap-3">
-            <div className="p-2 bg-gradient-to-br from-primary/20 to-accent/20 rounded-xl">
-              <TbApi className="text-2xl text-primary" />
+        <div className="p-3 sm:p-8 pb-2 sm:pb-4 flex-shrink-0">
+          <div className="flex items-center justify-between gap-2">
+            <h3 className="text-sm sm:text-lg md:text-xl font-bold text-foreground flex items-center gap-1.5 sm:gap-3">
+            <div className="p-1 sm:p-2 bg-gradient-to-br from-primary/20 to-accent/20 rounded-lg sm:rounded-xl flex-shrink-0">
+              <TbApi className="text-base sm:text-xl md:text-2xl text-primary" />
             </div>
-            API Tester
+            <span className="truncate">API Tester</span>
           </h3>
           <div className="flex items-center gap-2">
             {apiResponse && (
@@ -158,21 +158,21 @@ export default function ApiTester({ onClose }: ApiTesterProps) {
 
         {/* Scrollable Content */}
         <div className="px-4 sm:px-8 pb-4 sm:pb-8 overflow-auto flex-1">
-          <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
+          <div className="grid lg:grid-cols-2 gap-4 sm:gap-6">
           {/* Left Column - Request */}
-          <div className="space-y-4">
-            <h4 className="text-sm font-semibold text-foreground/80 uppercase tracking-wide">Request</h4>
+          <div className="space-y-3 sm:space-y-4">
+            <h4 className="text-xs sm:text-sm font-semibold text-foreground/80 uppercase tracking-wide">Request</h4>
             
             {/* Method and URL */}
-            <div className="flex gap-3">
-              <div className="w-32">
-                <label className="block text-sm font-medium text-foreground/70 mb-2">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+              <div className="w-full sm:w-32">
+                <label className="block text-xs sm:text-sm font-medium text-foreground/70 mb-1 sm:mb-2">
                   Method
                 </label>
                 <select
                   value={apiMethod}
                   onChange={(e) => setApiMethod(e.target.value as any)}
-                  className="w-full px-4 py-3 bg-white dark:bg-warm-dark border-2 border-primary/20 rounded-xl text-sm text-foreground focus:outline-none focus:border-primary transition-all shadow-sm font-medium"
+                  className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white dark:bg-warm-dark border-2 border-primary/20 rounded-xl text-xs sm:text-sm text-foreground focus:outline-none focus:border-primary transition-all shadow-sm font-medium"
                 >
                   <option value="GET">GET</option>
                   <option value="POST">POST</option>
@@ -181,12 +181,12 @@ export default function ApiTester({ onClose }: ApiTesterProps) {
                 </select>
               </div>
               <div className="flex-1">
-                <label className="block text-sm font-medium text-foreground/70 mb-2">
+                <label className="block text-xs sm:text-sm font-medium text-foreground/70 mb-1 sm:mb-2">
                   API Endpoint URL
                 </label>
                 <input
                   type="text"
-                  className="w-full px-4 py-3 bg-white dark:bg-warm-dark border-2 border-primary/20 hover:border-primary/40 focus:border-primary rounded-xl text-sm text-foreground focus:outline-none transition-all shadow-sm font-mono"
+                  className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white dark:bg-warm-dark border-2 border-primary/20 hover:border-primary/40 focus:border-primary rounded-xl text-xs sm:text-sm text-foreground focus:outline-none transition-all shadow-sm font-mono"
                   placeholder="https://api.example.com/users"
                   value={apiUrl}
                   onChange={(e) => setApiUrl(e.target.value)}
@@ -196,11 +196,11 @@ export default function ApiTester({ onClose }: ApiTesterProps) {
 
             {/* Headers */}
             <div>
-              <label className="block text-sm font-medium text-foreground/70 mb-2">
+              <label className="block text-xs sm:text-sm font-medium text-foreground/70 mb-1 sm:mb-2">
                 Headers (JSON)
               </label>
               <textarea
-                className="w-full h-24 px-4 py-3 bg-white dark:bg-warm-dark border-2 border-primary/20 hover:border-primary/40 focus:border-primary rounded-xl text-sm text-foreground resize-none focus:outline-none transition-all font-mono shadow-sm"
+                className="w-full h-20 sm:h-24 px-3 sm:px-4 py-2 sm:py-3 bg-white dark:bg-warm-dark border-2 border-primary/20 hover:border-primary/40 focus:border-primary rounded-xl text-xs sm:text-sm text-foreground resize-none focus:outline-none transition-all font-mono shadow-sm"
                 placeholder='{"Authorization": "Bearer token123"}'
                 value={apiHeaders}
                 onChange={(e) => setApiHeaders(e.target.value)}
@@ -210,11 +210,11 @@ export default function ApiTester({ onClose }: ApiTesterProps) {
             {/* Request Body (for POST/PUT) */}
             {(apiMethod === "POST" || apiMethod === "PUT") && (
               <div>
-                <label className="block text-sm font-medium text-foreground/70 mb-2">
+                <label className="block text-xs sm:text-sm font-medium text-foreground/70 mb-1 sm:mb-2">
                   Request Body (JSON)
                 </label>
                 <textarea
-                  className="w-full h-32 px-4 py-3 bg-white dark:bg-warm-dark border-2 border-primary/20 hover:border-primary/40 focus:border-primary rounded-xl text-sm text-foreground resize-none focus:outline-none transition-all font-mono shadow-sm"
+                  className="w-full h-24 sm:h-32 px-3 sm:px-4 py-2 sm:py-3 bg-white dark:bg-warm-dark border-2 border-primary/20 hover:border-primary/40 focus:border-primary rounded-xl text-xs sm:text-sm text-foreground resize-none focus:outline-none transition-all font-mono shadow-sm"
                   placeholder='{"name": "John", "email": "john@example.com"}'
                   value={apiBody}
                   onChange={(e) => setApiBody(e.target.value)}
@@ -226,7 +226,7 @@ export default function ApiTester({ onClose }: ApiTesterProps) {
             <button
               onClick={testApi}
               disabled={!apiUrl.trim() || apiLoading}
-              className="w-full px-6 py-3 bg-gradient-to-r from-primary to-accent text-white rounded-xl hover:shadow-xl hover:scale-[1.02] transition-all font-semibold text-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2"
+              className="w-full px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-primary to-accent text-white rounded-xl hover:shadow-xl hover:scale-[1.02] transition-all font-semibold text-xs sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2"
             >
               {apiLoading ? (
                 <>
@@ -247,8 +247,8 @@ export default function ApiTester({ onClose }: ApiTesterProps) {
           </div>
 
           {/* Right Column - Response */}
-          <div className="space-y-4">
-            <h4 className="text-sm font-semibold text-foreground/80 uppercase tracking-wide">Response</h4>
+          <div className="space-y-3 sm:space-y-4">
+            <h4 className="text-xs sm:text-sm font-semibold text-foreground/80 uppercase tracking-wide">Response</h4>
             
             {/* Error Display */}
             {apiError && (

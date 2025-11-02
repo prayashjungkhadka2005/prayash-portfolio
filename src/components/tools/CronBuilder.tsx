@@ -149,13 +149,13 @@ export default function CronBuilder({ onClose }: CronBuilderProps) {
   return (
       <div className="backdrop-blur-xl bg-white/95 dark:bg-warm-dark/95 border-t border-primary/30 dark:border-secondary/30 shadow-2xl rounded-t-3xl max-h-[650px] flex flex-col">
         {/* Fixed Header */}
-        <div className="p-4 sm:p-8 pb-3 sm:pb-4 flex-shrink-0">
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg sm:text-xl font-bold text-foreground flex items-center gap-2 sm:gap-3">
-            <div className="p-2 bg-gradient-to-br from-primary/20 to-accent/20 rounded-xl">
-              <BiTime className="text-2xl text-primary" />
+        <div className="p-3 sm:p-8 pb-2 sm:pb-4 flex-shrink-0">
+          <div className="flex items-center justify-between gap-2">
+            <h3 className="text-sm sm:text-lg md:text-xl font-bold text-foreground flex items-center gap-1.5 sm:gap-3">
+            <div className="p-1 sm:p-2 bg-gradient-to-br from-primary/20 to-accent/20 rounded-lg sm:rounded-xl flex-shrink-0">
+              <BiTime className="text-base sm:text-xl md:text-2xl text-primary" />
             </div>
-            Cron Expression Builder
+            <span className="truncate">Cron Builder</span>
           </h3>
           <button
             onClick={onClose}
@@ -171,22 +171,22 @@ export default function CronBuilder({ onClose }: CronBuilderProps) {
 
         {/* Scrollable Content */}
         <div className="px-4 sm:px-8 pb-4 sm:pb-8 overflow-auto flex-1">
-          <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
+          <div className="grid lg:grid-cols-2 gap-4 sm:gap-6">
           {/* Left Column - Builder */}
-          <div className="space-y-4">
-            <h4 className="text-sm font-semibold text-foreground/80 uppercase tracking-wide">Build Expression</h4>
+          <div className="space-y-3 sm:space-y-4">
+            <h4 className="text-xs sm:text-sm font-semibold text-foreground/80 uppercase tracking-wide">Build Expression</h4>
             
             {/* Quick Presets */}
             <div>
-              <label className="block text-sm font-medium text-foreground/70 mb-2">
+              <label className="block text-xs sm:text-sm font-medium text-foreground/70 mb-1 sm:mb-2">
                 Common Patterns
               </label>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {presets.map((preset, idx) => (
                   <button
                     key={idx}
                     onClick={() => applyPreset(preset.values)}
-                    className="px-3 py-2 bg-primary/10 hover:bg-primary/20 border border-primary/20 rounded-lg text-xs font-medium text-foreground transition-all text-left"
+                    className="px-2 sm:px-3 py-1.5 sm:py-2 bg-primary/10 hover:bg-primary/20 border border-primary/20 rounded-lg text-[10px] sm:text-xs font-medium text-foreground transition-all text-left"
                   >
                     {preset.name}
                   </button>
@@ -195,15 +195,15 @@ export default function CronBuilder({ onClose }: CronBuilderProps) {
             </div>
 
             {/* Cron Fields */}
-            <div className="space-y-3">
+            <div className="space-y-2 sm:space-y-3">
               <div>
-                <label className="block text-sm font-medium text-foreground/70 mb-2">
+                <label className="block text-xs sm:text-sm font-medium text-foreground/70 mb-1 sm:mb-2">
                   Minute (0-59)
                 </label>
                 <select
                   value={minute}
                   onChange={(e) => setMinute(e.target.value)}
-                  className="w-full px-4 py-3 bg-white dark:bg-warm-dark border-2 border-primary/20 rounded-xl text-sm text-foreground focus:outline-none focus:border-primary transition-all shadow-sm"
+                  className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white dark:bg-warm-dark border-2 border-primary/20 rounded-xl text-xs sm:text-sm text-foreground focus:outline-none focus:border-primary transition-all shadow-sm"
                 >
                   <option value="*">Every minute (*)</option>
                   <option value="0">:00</option>
@@ -218,13 +218,13 @@ export default function CronBuilder({ onClose }: CronBuilderProps) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-foreground/70 mb-2">
+                <label className="block text-xs sm:text-sm font-medium text-foreground/70 mb-1 sm:mb-2">
                   Hour (0-23)
                 </label>
                 <select
                   value={hour}
                   onChange={(e) => setHour(e.target.value)}
-                  className="w-full px-4 py-3 bg-white dark:bg-warm-dark border-2 border-primary/20 rounded-xl text-sm text-foreground focus:outline-none focus:border-primary transition-all shadow-sm"
+                  className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white dark:bg-warm-dark border-2 border-primary/20 rounded-xl text-xs sm:text-sm text-foreground focus:outline-none focus:border-primary transition-all shadow-sm"
                 >
                   <option value="*">Every hour (*)</option>
                   <option value="0">Midnight (0)</option>
@@ -238,13 +238,13 @@ export default function CronBuilder({ onClose }: CronBuilderProps) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-foreground/70 mb-2">
+                <label className="block text-xs sm:text-sm font-medium text-foreground/70 mb-1 sm:mb-2">
                   Day of Month (1-31)
                 </label>
                 <select
                   value={dayOfMonth}
                   onChange={(e) => setDayOfMonth(e.target.value)}
-                  className="w-full px-4 py-3 bg-white dark:bg-warm-dark border-2 border-primary/20 rounded-xl text-sm text-foreground focus:outline-none focus:border-primary transition-all shadow-sm"
+                  className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white dark:bg-warm-dark border-2 border-primary/20 rounded-xl text-xs sm:text-sm text-foreground focus:outline-none focus:border-primary transition-all shadow-sm"
                 >
                   <option value="*">Every day (*)</option>
                   <option value="1">1st of month</option>
@@ -254,13 +254,13 @@ export default function CronBuilder({ onClose }: CronBuilderProps) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-foreground/70 mb-2">
+                <label className="block text-xs sm:text-sm font-medium text-foreground/70 mb-1 sm:mb-2">
                   Month (1-12)
                 </label>
                 <select
                   value={month}
                   onChange={(e) => setMonth(e.target.value)}
-                  className="w-full px-4 py-3 bg-white dark:bg-warm-dark border-2 border-primary/20 rounded-xl text-sm text-foreground focus:outline-none focus:border-primary transition-all shadow-sm"
+                  className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white dark:bg-warm-dark border-2 border-primary/20 rounded-xl text-xs sm:text-sm text-foreground focus:outline-none focus:border-primary transition-all shadow-sm"
                 >
                   <option value="*">Every month (*)</option>
                   <option value="1">January</option>
@@ -279,13 +279,13 @@ export default function CronBuilder({ onClose }: CronBuilderProps) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-foreground/70 mb-2">
+                <label className="block text-xs sm:text-sm font-medium text-foreground/70 mb-1 sm:mb-2">
                   Day of Week (0-6)
                 </label>
                 <select
                   value={dayOfWeek}
                   onChange={(e) => setDayOfWeek(e.target.value)}
-                  className="w-full px-4 py-3 bg-white dark:bg-warm-dark border-2 border-primary/20 rounded-xl text-sm text-foreground focus:outline-none focus:border-primary transition-all shadow-sm"
+                  className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white dark:bg-warm-dark border-2 border-primary/20 rounded-xl text-xs sm:text-sm text-foreground focus:outline-none focus:border-primary transition-all shadow-sm"
                 >
                   <option value="*">Every day (*)</option>
                   <option value="0">Sunday</option>
@@ -303,8 +303,8 @@ export default function CronBuilder({ onClose }: CronBuilderProps) {
           </div>
 
           {/* Right Column - Output */}
-          <div className="space-y-4">
-            <h4 className="text-sm font-semibold text-foreground/80 uppercase tracking-wide">Expression & Schedule</h4>
+          <div className="space-y-3 sm:space-y-4">
+            <h4 className="text-xs sm:text-sm font-semibold text-foreground/80 uppercase tracking-wide">Expression & Schedule</h4>
             
             {/* Cron Expression Output */}
             <div>

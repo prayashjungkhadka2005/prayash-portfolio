@@ -35,13 +35,13 @@ export default function HashGenerator({ onClose }: HashGeneratorProps) {
 
   return (
     <div className="backdrop-blur-xl bg-white/95 dark:bg-warm-dark/95 border-t border-primary/30 dark:border-secondary/30 shadow-2xl rounded-t-3xl">
-      <div className="p-4 sm:p-8">
-        <div className="flex items-center justify-between mb-4 sm:mb-6">
-          <h3 className="text-lg sm:text-xl font-bold text-foreground flex items-center gap-2 sm:gap-3">
-            <div className="p-2 bg-gradient-to-br from-primary/20 to-accent/20 rounded-xl">
-              <RiLockPasswordLine className="text-2xl text-primary" />
+      <div className="p-3 sm:p-8">
+        <div className="flex items-center justify-between gap-2 mb-3 sm:mb-6">
+          <h3 className="text-sm sm:text-lg md:text-xl font-bold text-foreground flex items-center gap-1.5 sm:gap-3">
+            <div className="p-1 sm:p-2 bg-gradient-to-br from-primary/20 to-accent/20 rounded-lg sm:rounded-xl flex-shrink-0">
+              <RiLockPasswordLine className="text-base sm:text-xl md:text-2xl text-primary" />
             </div>
-            SHA-256 Hash Generator
+            <span className="truncate">Hash Generator</span>
           </h3>
           <div className="flex items-center gap-2">
             {hashOutput && (
