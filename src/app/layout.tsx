@@ -11,8 +11,8 @@ const dmSans = DM_Sans({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://prayash-portfolio.vercel.app'),
-  title: "Prayash Jung Khadka | Full-Stack JavaScript Developer",
-  description: "Full-Stack JavaScript Developer specializing in React, Next.js, Node.js, and TypeScript. Building scalable web applications with PostgreSQL, MongoDB, AWS, and modern tech stack.",
+  title: "Prayash Jung Khadka | Web Developer",
+  description: "Web Developer specializing in React, Next.js, Node.js, and TypeScript. Building scalable web applications with PostgreSQL, MongoDB, AWS, and modern tech stack.",
   keywords: ["Full-Stack Developer", "JavaScript Developer", "React Developer", "Next.js Developer", "Node.js", "TypeScript", "Prayash Khadka", "Web Developer Nepal", "Backend Developer", "API Developer", "Upwork Developer"],
   authors: [{ name: "Prayash Jung Khadka" }],
   creator: "Prayash Jung Khadka",
@@ -52,8 +52,8 @@ export const metadata: Metadata = {
   },
   manifest: '/site.webmanifest',
   openGraph: {
-    title: "Prayash Jung Khadka | Full-Stack JavaScript Developer",
-    description: "Full-Stack JavaScript Developer specializing in React, Next.js, Node.js, and TypeScript. Building scalable web applications with PostgreSQL, MongoDB, AWS, and modern tech stack.",
+    title: "Prayash Jung Khadka | Web Developer",
+    description: "Web Developer specializing in React, Next.js, Node.js, and TypeScript. Building scalable web applications with PostgreSQL, MongoDB, AWS, and modern tech stack.",
     type: "website",
     locale: "en_US",
     siteName: "Prayash Jung Khadka Portfolio",
@@ -62,13 +62,13 @@ export const metadata: Metadata = {
         url: '/images/profile.jpg',
         width: 1200,
         height: 630,
-        alt: 'Prayash Jung Khadka - Full-Stack JavaScript Developer',
+        alt: 'Prayash Jung Khadka - Web Developer',
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Prayash Jung Khadka | Full-Stack JavaScript Developer",
+    title: "Prayash Jung Khadka | Web Developer",
     description: "Building scalable web applications with modern technologies",
     creator: "@prayashjungkhadka",
     images: ['/images/profile.jpg'],

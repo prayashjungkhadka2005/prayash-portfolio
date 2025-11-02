@@ -47,7 +47,7 @@ export default function Hero() {
               transition={{ duration: 0.5, delay: 0.2 }}
             >
               <span className="px-4 py-2 bg-white/90 dark:bg-warm-dark/80 border-2 border-[#52616B] dark:border-primary text-primary rounded-full text-sm font-medium shadow-md backdrop-blur-md">
-                Full-Stack JavaScript Developer
+                Web Developer
               </span>
             </motion.div>
             

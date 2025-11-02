@@ -90,7 +90,7 @@ export default function Terminal({ terminalHeight, setTerminalHeight, onClose }:
         responseType = "info";
         break;
       case "about":
-        response = "Full-Stack JavaScript Developer | Backend & Team Management | 1,200+ hrs Upwork";
+        response = "Web Developer | Backend & Team Management | 1,200+ hrs Upwork";
         break;
       case "skills":
         response = "React, Next.js, Node.js, TypeScript, PostgreSQL, MongoDB, Docker, AWS, Express";
