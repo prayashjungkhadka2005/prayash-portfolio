@@ -1,5 +1,6 @@
 import Navbar from "@/components/Navbar";
 import ThemeToggle from "@/components/ThemeToggle";
+import DevToolbar from "@/components/DevToolbar";
 import Hero from "@/components/sections/Hero";
 import About from "@/components/sections/About";
 import Experience from "@/components/sections/Experience";
@@ -12,6 +13,7 @@ export default function Home() {
     <>
       <Navbar />
       <ThemeToggle />
+      <DevToolbar />
       <main>
         <Hero />
         <About />

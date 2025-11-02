@@ -50,22 +50,19 @@ p {
   }
 }
 
-/* Custom scrollbar for the warm theme */
+/* Hide scrollbar for cleaner look */
 ::-webkit-scrollbar {
-  width: 10px;
+  display: none;
 }
 
-::-webkit-scrollbar-track {
-  background: var(--background);
+/* For Firefox */
+* {
+  scrollbar-width: none;
 }
 
-::-webkit-scrollbar-thumb {
-  background: var(--primary);
-  border-radius: 5px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--secondary);
+/* For IE/Edge */
+body {
+  -ms-overflow-style: none;
 }
 
 /* Modern Blob Animation */
