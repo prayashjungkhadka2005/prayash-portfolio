@@ -182,7 +182,6 @@ export default function DevToolbar() {
                 className="flex-1 bg-transparent text-foreground focus:outline-none text-sm"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                autoFocus
               />
               <button
                 onClick={() => {

@@ -319,7 +319,6 @@ export default function Terminal({ terminalHeight, setTerminalHeight, onClose }:
           onChange={(e) => setTerminalInput(e.target.value)}
           onKeyDown={handleKeyDown}
           disabled={isTyping}
-          autoFocus
         />
       </div>
     </div>
