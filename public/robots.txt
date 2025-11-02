@@ -2,6 +2,6 @@
 User-agent: *
 Allow: /
 
-# Sitemap location (update with your actual domain when deployed)
-Sitemap: https://yourportfolio.com/sitemap.xml
+# Sitemap location
+Sitemap: https://prayash-portfolio.vercel.app/sitemap.xml
 

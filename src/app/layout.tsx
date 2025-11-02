@@ -10,6 +10,7 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://prayash-portfolio.vercel.app'),
   title: "Prayash Jung Khadka | Full-Stack JavaScript Developer",
   description: "Full-Stack JavaScript Developer specializing in React, Next.js, Node.js, and TypeScript. Building scalable web applications with PostgreSQL, MongoDB, AWS, and modern tech stack.",
   keywords: ["Full-Stack Developer", "JavaScript Developer", "React Developer", "Next.js Developer", "Node.js", "TypeScript", "Prayash Khadka", "Web Developer Nepal", "Backend Developer", "API Developer", "Upwork Developer"],
