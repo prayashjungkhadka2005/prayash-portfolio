@@ -41,8 +41,9 @@ npm start
 
 ## 🌐 Access
 
-- Local: http://localhost:3000
-- Network: http://192.168.1.66:3000
+- **Production**: https://prayash-portfolio.vercel.app ✨
+- **Local Dev**: http://localhost:3000
+- **Network**: http://192.168.1.66:3000
 
 ## 📝 Sections
 

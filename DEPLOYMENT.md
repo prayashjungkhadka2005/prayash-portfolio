@@ -27,26 +27,26 @@ None needed! ✅
 
 ### **Domain Settings (After Deployment):**
 ```
-Production Domain: yourportfolio.vercel.app
+Production Domain: prayash-portfolio.vercel.app ✅
 Custom Domain: (optional) yourdomain.com
 ```
 
 ## 🔧 Post-Deployment Steps
 
-### 1. Update Metadata Base URL
-After deployment, update `src/app/layout.tsx`:
+### 1. Update Metadata Base URL ✅ DONE
+Updated `src/app/layout.tsx`:
 
 ```typescript
 export const metadata: Metadata = {
-  metadataBase: new URL('https://yourportfolio.vercel.app'),
+  metadataBase: new URL('https://prayash-portfolio.vercel.app'),
   // ... rest stays the same
 }
 ```
 
-### 2. Update robots.txt
-Update `public/robots.txt`:
+### 2. Update robots.txt ✅ DONE
+Updated `public/robots.txt`:
 ```txt
-Sitemap: https://yourportfolio.vercel.app/sitemap.xml
+Sitemap: https://prayash-portfolio.vercel.app/sitemap.xml
 ```
 
 ### 3. Test Everything

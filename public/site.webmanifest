@@ -1,6 +1,7 @@
 {
   "name": "Prayash Jung Khadka - Full-Stack Developer",
   "short_name": "Prayash Portfolio",
+  "start_url": "https://prayash-portfolio.vercel.app",
   "icons": [
     {
       "src": "/favicon_io/android-chrome-192x192.png",
@@ -15,5 +16,6 @@
   ],
   "theme_color": "#52616B",
   "background_color": "#F0F5F9",
-  "display": "standalone"
+  "display": "standalone",
+  "scope": "/"
 }
