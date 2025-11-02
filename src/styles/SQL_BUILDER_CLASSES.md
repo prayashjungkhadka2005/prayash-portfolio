@@ -253,7 +253,7 @@ Examples:
 ## 🚀 **HOW TO USE:**
 
 ### **1. Import in Layout** ✅
-Already imported in `/src/app/tools/sql-builder/layout.tsx`:
+Already imported in `/src/app/layout.tsx` (globally available):
 ```tsx
 import "@/styles/sql-builder.css";
 ```
