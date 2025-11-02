@@ -233,6 +233,19 @@ export default function Terminal({ terminalHeight, setTerminalHeight, onClose }:
     }
   }, [terminalHistory]);
 
+  // Scroll input into view when focused (fixes mobile keyboard issue)
+  const handleInputFocus = () => {
+    if (terminalInputRef.current) {
+      setTimeout(() => {
+        terminalInputRef.current?.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'end',
+          inline: 'nearest'
+        });
+      }, 300); // Wait for keyboard animation
+    }
+  };
+
   return (
       <div className="h-full backdrop-blur-xl bg-black/95 border-t-2 border-primary/30 shadow-2xl flex flex-col pointer-events-auto">
         {/* Drag to Resize Handle */}
@@ -324,6 +337,7 @@ export default function Terminal({ terminalHeight, setTerminalHeight, onClose }:
           value={terminalInput}
           onChange={(e) => setTerminalInput(e.target.value)}
           onKeyDown={handleKeyDown}
+          onFocus={handleInputFocus}
           disabled={isTyping}
           autoFocus={isDesktop}
         />

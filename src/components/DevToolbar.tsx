@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { VscTerminal } from "react-icons/vsc";
 import { RiKey2Line, RiLockPasswordLine } from "react-icons/ri";
@@ -21,6 +21,7 @@ export default function DevToolbar() {
   const [searchQuery, setSearchQuery] = useState("");
   const [showSearch, setShowSearch] = useState(false);
   const [isDesktop, setIsDesktop] = useState(true);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   // Detect if desktop (non-touch device)
   useEffect(() => {
@@ -183,11 +184,22 @@ export default function DevToolbar() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
               <input
+                ref={searchInputRef}
                 type="text"
                 placeholder="Search tools..."
                 className="flex-1 bg-transparent text-foreground focus:outline-none text-sm"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
+                onFocus={() => {
+                  if (!isDesktop) {
+                    setTimeout(() => {
+                      searchInputRef.current?.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'center'
+                      });
+                    }, 300);
+                  }
+                }}
                 autoFocus={isDesktop}
               />
               <button
