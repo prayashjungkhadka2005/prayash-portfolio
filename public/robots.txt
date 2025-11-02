@@ -1,0 +1,7 @@
+# Allow all search engines to index the site
+User-agent: *
+Allow: /
+
+# Sitemap location (update with your actual domain when deployed)
+Sitemap: https://yourportfolio.com/sitemap.xml
+

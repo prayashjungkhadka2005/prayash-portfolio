@@ -11,6 +11,7 @@ interface TerminalProps {
 export default function Terminal({ terminalHeight, setTerminalHeight, onClose }: TerminalProps) {
   const terminalOutputRef = useRef<HTMLDivElement>(null);
   const terminalInputRef = useRef<HTMLInputElement>(null);
+  const typeIntervalRef = useRef<NodeJS.Timeout | null>(null);
   
   const [terminalInput, setTerminalInput] = useState("");
   const [terminalHistory, setTerminalHistory] = useState<Array<{text: string, type?: string}>>([
@@ -20,14 +21,28 @@ export default function Terminal({ terminalHeight, setTerminalHeight, onClose }:
   const [historyIndex, setHistoryIndex] = useState(-1);
   const [isTyping, setIsTyping] = useState(false);
 
+  // Cleanup interval on unmount
+  useEffect(() => {
+    return () => {
+      if (typeIntervalRef.current) {
+        clearInterval(typeIntervalRef.current);
+      }
+    };
+  }, []);
+
   // Typing animation effect
   const typeMessage = (message: string, type: string = "success") => {
+    // Clear any existing interval
+    if (typeIntervalRef.current) {
+      clearInterval(typeIntervalRef.current);
+    }
+
     setIsTyping(true);
     const words = message.split(" ");
     let currentText = "";
     let wordIndex = 0;
 
-    const typeInterval = setInterval(() => {
+    typeIntervalRef.current = setInterval(() => {
       if (wordIndex < words.length) {
         currentText += (wordIndex > 0 ? " " : "") + words[wordIndex];
         setTerminalHistory(prev => {
@@ -37,7 +52,10 @@ export default function Terminal({ terminalHeight, setTerminalHeight, onClose }:
         });
         wordIndex++;
       } else {
-        clearInterval(typeInterval);
+        if (typeIntervalRef.current) {
+          clearInterval(typeIntervalRef.current);
+          typeIntervalRef.current = null;
+        }
         setIsTyping(false);
         setTimeout(() => {
           terminalInputRef.current?.focus();
