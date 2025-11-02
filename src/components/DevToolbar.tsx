@@ -169,7 +169,7 @@ export default function DevToolbar() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
-            className="fixed bottom-16 sm:bottom-20 right-2 sm:right-6 z-[65] backdrop-blur-xl bg-white/95 dark:bg-warm-dark/95 border border-primary/30 rounded-2xl shadow-2xl p-4 w-[calc(100vw-1rem)] sm:w-80 max-w-md"
+            className="fixed bottom-14 sm:bottom-20 right-2 sm:right-6 z-[65] backdrop-blur-xl bg-white/95 dark:bg-warm-dark/95 border border-primary/30 rounded-2xl shadow-2xl p-4 w-[calc(100vw-1rem)] sm:w-80 max-w-md"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center gap-2 mb-3">
@@ -247,8 +247,8 @@ export default function DevToolbar() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
-            className="fixed left-0 right-0 z-[60] pointer-events-none"
-            style={activeTool === "terminal" ? { bottom: "4rem", height: `${terminalHeight}px` } : { bottom: "4rem" }}
+            className="fixed left-0 right-0 bottom-14 sm:bottom-16 z-[60] pointer-events-none"
+            style={activeTool === "terminal" ? { height: `${terminalHeight}px` } : {}}
           >
             {/* Terminal - Full Width */}
             {activeTool === "terminal" && (

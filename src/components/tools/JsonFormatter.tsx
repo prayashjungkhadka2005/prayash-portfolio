@@ -34,9 +34,9 @@ export default function JsonFormatter({ onClose }: JsonFormatterProps) {
 
   return (
     <div className="backdrop-blur-xl bg-white/95 dark:bg-warm-dark/95 border-t border-primary/30 dark:border-secondary/30 shadow-2xl rounded-t-3xl">
-      <div className="p-8">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-xl font-bold text-foreground flex items-center gap-3">
+      <div className="p-4 sm:p-8">
+        <div className="flex items-center justify-between mb-4 sm:mb-6">
+          <h3 className="text-lg sm:text-xl font-bold text-foreground flex items-center gap-2 sm:gap-3">
             <div className="p-2 bg-gradient-to-br from-primary/20 to-accent/20 rounded-xl">
               <BiCodeBlock className="text-2xl text-primary" />
             </div>

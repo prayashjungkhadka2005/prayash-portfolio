@@ -115,11 +115,11 @@ export default function ApiTester({ onClose }: ApiTesterProps) {
   };
 
   return (
-    <div className="backdrop-blur-xl bg-white/95 dark:bg-warm-dark/95 border-t border-primary/30 dark:border-secondary/30 shadow-2xl rounded-t-3xl max-h-[650px] flex flex-col">
-      {/* Fixed Header */}
-      <div className="p-8 pb-4 flex-shrink-0">
-        <div className="flex items-center justify-between">
-          <h3 className="text-xl font-bold text-foreground flex items-center gap-3">
+      <div className="backdrop-blur-xl bg-white/95 dark:bg-warm-dark/95 border-t border-primary/30 dark:border-secondary/30 shadow-2xl rounded-t-3xl max-h-[650px] flex flex-col">
+        {/* Fixed Header */}
+        <div className="p-4 sm:p-8 pb-3 sm:pb-4 flex-shrink-0">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg sm:text-xl font-bold text-foreground flex items-center gap-2 sm:gap-3">
             <div className="p-2 bg-gradient-to-br from-primary/20 to-accent/20 rounded-xl">
               <TbApi className="text-2xl text-primary" />
             </div>
@@ -156,9 +156,9 @@ export default function ApiTester({ onClose }: ApiTesterProps) {
         </div>
       </div>
 
-      {/* Scrollable Content */}
-      <div className="px-8 pb-8 overflow-auto flex-1">
-        <div className="grid md:grid-cols-2 gap-6">
+        {/* Scrollable Content */}
+        <div className="px-4 sm:px-8 pb-4 sm:pb-8 overflow-auto flex-1">
+          <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
           {/* Left Column - Request */}
           <div className="space-y-4">
             <h4 className="text-sm font-semibold text-foreground/80 uppercase tracking-wide">Request</h4>
