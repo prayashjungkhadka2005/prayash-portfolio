@@ -59,7 +59,7 @@ export default function Navbar() {
                 <li key={item.name}>
                   <a
                     href={item.href}
-                    className={`relative px-4 py-2 text-sm font-medium transition-all duration-300 rounded-full ${
+                    className={`relative inline-block px-4 py-2 text-sm font-medium transition-all duration-300 rounded-full overflow-hidden ${
                       activeSection === item.href.substring(1)
                         ? "text-white bg-gradient-to-r from-primary to-accent shadow-md"
                         : "text-foreground/80 hover:text-foreground hover:bg-primary/10"
@@ -77,7 +77,7 @@ export default function Navbar() {
                 <li key={item.name} className="flex-shrink-0">
                   <a
                     href={item.href}
-                    className={`px-2 sm:px-3 py-1.5 font-medium transition-all duration-300 rounded-full whitespace-nowrap ${
+                    className={`inline-block px-2 sm:px-3 py-1.5 font-medium transition-all duration-300 rounded-full overflow-hidden whitespace-nowrap ${
                       activeSection === item.href.substring(1)
                         ? "text-white bg-gradient-to-r from-primary to-accent"
                         : "text-foreground/70 hover:text-foreground hover:bg-primary/10"
