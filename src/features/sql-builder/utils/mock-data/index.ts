@@ -4,7 +4,7 @@
  */
 
 import * as factories from './factories';
-import { WhereCondition, OrderByClause } from '@/types/sql-builder';
+import { WhereCondition, OrderByClause } from '@/features/sql-builder/types';
 
 // Cache for generated data
 const dataCache: Record<string, any[]> = {};

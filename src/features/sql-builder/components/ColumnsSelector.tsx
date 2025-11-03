@@ -1,4 +1,4 @@
-import { SAMPLE_TABLES } from "@/types/sql-builder";
+import { SAMPLE_TABLES } from "@/features/sql-builder/types";
 import { useMemo } from "react";
 import HelpTooltip from "./HelpTooltip";
 

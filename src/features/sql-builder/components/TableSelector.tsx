@@ -1,4 +1,4 @@
-import { SAMPLE_TABLES } from "@/types/sql-builder";
+import { SAMPLE_TABLES } from "@/features/sql-builder/types";
 import HelpTooltip from "./HelpTooltip";
 
 interface TableSelectorProps {

@@ -1,4 +1,4 @@
-import { QueryState } from "@/types/sql-builder";
+import { QueryState } from "@/features/sql-builder/types";
 
 /**
  * Generate SQL query from QueryState

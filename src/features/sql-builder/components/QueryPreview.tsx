@@ -1,12 +1,12 @@
 "use client";
 
-import { QueryState } from "@/types/sql-builder";
+import { QueryState } from "@/features/sql-builder/types";
 import { useState, useMemo } from "react";
-import { generateSQL, explainQuery } from "@/utils/sql-generator";
-import { getMockData, applyWhere, applyOrderBy, applyPagination } from "@/utils/mock-data-generator";
-import { exportToCSV, exportToJSON, exportToSQL, copyAsJSON, copyAsCSV, copyAsTable } from "@/utils/export-utils";
-import { useToast } from "@/hooks/useToast";
-import Toast from "@/components/ui/Toast";
+import { generateSQL, explainQuery } from "@/features/sql-builder/utils/sql-generator";
+import { getMockData, applyWhere, applyOrderBy, applyPagination } from "@/features/sql-builder/utils/mock-data-generator";
+import { exportToCSV, exportToJSON, exportToSQL, copyAsJSON, copyAsCSV, copyAsTable } from "@/features/sql-builder/utils/export-utils";
+import { useToast } from "@/features/sql-builder/hooks/useToast";
+import Toast from "@/features/sql-builder/components/ui/Toast";
 
 interface QueryPreviewProps {
   queryState: QueryState;

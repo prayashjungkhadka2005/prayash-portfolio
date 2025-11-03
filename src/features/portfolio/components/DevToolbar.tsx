@@ -8,12 +8,12 @@ import { BiCodeBlock, BiTime } from "react-icons/bi";
 import { TbApi } from "react-icons/tb";
 
 // Import tool components
-import Terminal from "./tools/Terminal";
-import ApiTester from "./tools/ApiTester";
-import JwtDecoder from "./tools/JwtDecoder";
-import HashGenerator from "./tools/HashGenerator";
-import JsonFormatter from "./tools/JsonFormatter";
-import CronBuilder from "./tools/CronBuilder";
+import Terminal from "@/features/dev-tools/components/Terminal";
+import ApiTester from "@/features/dev-tools/components/ApiTester";
+import JwtDecoder from "@/features/dev-tools/components/JwtDecoder";
+import HashGenerator from "@/features/dev-tools/components/HashGenerator";
+import JsonFormatter from "@/features/dev-tools/components/JsonFormatter";
+import CronBuilder from "@/features/dev-tools/components/CronBuilder";
 
 export default function DevToolbar() {
   const [activeTool, setActiveTool] = useState<string | null>(null);

@@ -3,15 +3,14 @@
 import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import ThemeToggle from "@/components/ThemeToggle";
-import QuickTemplates from "@/components/sql-builder/QuickTemplates";
-import QueryTypeSelector from "@/components/sql-builder/QueryTypeSelector";
-import TableSelector from "@/components/sql-builder/TableSelector";
-import ColumnsSelector from "@/components/sql-builder/ColumnsSelector";
-import WhereClauseBuilder from "@/components/sql-builder/WhereClauseBuilder";
-import OrderByBuilder from "@/components/sql-builder/OrderByBuilder";
-import QueryPreview from "@/components/sql-builder/QueryPreview";
-import { QueryState, WhereCondition, OrderByClause } from "@/types/sql-builder";
+import QuickTemplates from "@/features/sql-builder/components/QuickTemplates";
+import QueryTypeSelector from "@/features/sql-builder/components/QueryTypeSelector";
+import TableSelector from "@/features/sql-builder/components/TableSelector";
+import ColumnsSelector from "@/features/sql-builder/components/ColumnsSelector";
+import WhereClauseBuilder from "@/features/sql-builder/components/WhereClauseBuilder";
+import OrderByBuilder from "@/features/sql-builder/components/OrderByBuilder";
+import QueryPreview from "@/features/sql-builder/components/QueryPreview";
+import { QueryState, WhereCondition, OrderByClause } from "@/features/sql-builder/types";
 
 export default function Home() {
   const [queryState, setQueryState] = useState<QueryState>({
@@ -90,9 +89,7 @@ export default function Home() {
   };
 
   return (
-    <>
-      <ThemeToggle />
-      <div className="min-h-screen bg-[#fafafa] dark:bg-[#0a0a0a]">
+    <div className="min-h-screen bg-[#fafafa] dark:bg-[#0a0a0a]">
         {/* Subtle Grid Pattern - Backend Style */}
         <div className="fixed inset-0 opacity-[0.02] dark:opacity-[0.03] pointer-events-none" style={{
           backgroundImage: 'linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px)',
@@ -292,6 +289,5 @@ export default function Home() {
           </footer>
         </main>
       </div>
-    </>
   );
 }

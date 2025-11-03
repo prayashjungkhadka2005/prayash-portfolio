@@ -1,4 +1,4 @@
-import { QueryType } from "@/types/sql-builder";
+import { QueryType } from "@/features/sql-builder/types";
 
 interface QueryTypeSelectorProps {
   value: QueryType;

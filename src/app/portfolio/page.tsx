@@ -1,12 +1,14 @@
-import Navbar from "@/components/Navbar";
-import ThemeToggle from "@/components/ThemeToggle";
-import DevToolbar from "@/components/DevToolbar";
-import Hero from "@/components/sections/Hero";
-import About from "@/components/sections/About";
-import Experience from "@/components/sections/Experience";
-import Skills from "@/components/sections/Skills";
-import Projects from "@/components/sections/Projects";
-import Contact from "@/components/sections/Contact";
+"use client";
+
+import Navbar from "@/features/portfolio/components/Navbar";
+import ThemeToggle from "@/shared/components/ThemeToggle";
+import DevToolbar from "@/features/portfolio/components/DevToolbar";
+import Hero from "@/features/portfolio/sections/Hero";
+import About from "@/features/portfolio/sections/About";
+import Experience from "@/features/portfolio/sections/Experience";
+import Skills from "@/features/portfolio/sections/Skills";
+import Projects from "@/features/portfolio/sections/Projects";
+import Contact from "@/features/portfolio/sections/Contact";
 
 export default function Home() {
   return (
