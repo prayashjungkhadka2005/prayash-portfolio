@@ -17,8 +17,14 @@ import HelpTooltip from "@/features/sql-builder/components/HelpTooltip";
 import TableStructureVisualizer from "@/features/sql-builder/components/TableStructureVisualizer";
 import LearningHints from "@/features/sql-builder/components/LearningHints";
 import QueryVisualizations from "@/features/sql-builder/components/QueryVisualizations";
+import InsertValueBuilder from "@/features/sql-builder/components/InsertValueBuilder";
+import JoinBuilder from "@/features/sql-builder/components/JoinBuilder";
+import DistinctToggle from "@/features/sql-builder/components/DistinctToggle";
+import WelcomeTutorial from "@/features/sql-builder/components/WelcomeTutorial";
 import { useQueryBuilder } from "@/features/sql-builder/hooks/useQueryBuilder";
-import { useState, useCallback } from "react";
+import { useKeyboardShortcuts } from "@/features/sql-builder/hooks/useKeyboardShortcuts";
+import { useState, useCallback, useEffect } from "react";
+import { decodeQueryFromURL, copyShareableURL } from "@/features/sql-builder/utils/url-sharing";
 
 export default function Home() {
   const {
@@ -29,11 +35,13 @@ export default function Home() {
     updateAggregates,
     updateDistinct,
     updateWhereConditions,
+    updateJoins,
     updateGroupBy,
     updateHaving,
     updateOrderBy,
     updateLimit,
     updateOffset,
+    updateInsertValues,
     reset: resetBuilder,
     loadTemplate,
   } = useQueryBuilder();
@@ -45,6 +53,69 @@ export default function Home() {
   // State for collapsible sections (default: open for better UX)
   const [isAdvancedFiltersOpen, setIsAdvancedFiltersOpen] = useState(true);
   const [isSortingOpen, setIsSortingOpen] = useState(true);
+
+  // State for share functionality
+  const [shareToast, setShareToast] = useState(false);
+
+  // State for welcome tutorial
+  const [showTutorial, setShowTutorial] = useState(false);
+
+  // Check if first visit
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const hasVisited = localStorage.getItem('sql-builder-visited');
+        if (!hasVisited) {
+          setShowTutorial(true);
+        }
+      } catch (error) {
+        // LocalStorage blocked or unavailable - show tutorial anyway
+        setShowTutorial(true);
+      }
+    }
+  }, []);
+
+  const handleTutorialComplete = () => {
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('sql-builder-visited', 'true');
+      } catch (error) {
+        // LocalStorage blocked - tutorial won't persist, but that's okay
+        console.log('Could not save tutorial preference');
+      }
+    }
+    setShowTutorial(false);
+  };
+
+  // Load query from URL on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const encoded = params.get('q');
+      if (encoded) {
+        const decodedQuery = decodeQueryFromURL(encoded);
+        if (decodedQuery) {
+          loadTemplate(decodedQuery);
+        }
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only run once on mount
+
+  // Share query handler
+  const handleShareQuery = async () => {
+    const success = await copyShareableURL(queryState);
+    if (success) {
+      setShareToast(true);
+      setTimeout(() => setShareToast(false), 3000);
+    }
+  };
+
+  // Enable keyboard shortcuts
+  useKeyboardShortcuts({
+    onShare: queryState.table ? handleShareQuery : undefined,
+    onReset: queryState.table ? resetBuilder : undefined,
+  });
 
   // Memoized callbacks to prevent infinite loops
   const handleRowCountsChange = useCallback((counts: typeof rowCounts) => {
@@ -96,7 +167,8 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-[#fafafa] dark:bg-[#0a0a0a] flex flex-col">
+    <>
+      <div className="min-h-screen bg-[#fafafa] dark:bg-[#0a0a0a] flex flex-col">
       {/* Navbar */}
       <Navbar />
 
@@ -188,16 +260,28 @@ export default function Home() {
                       </div>
                     </div>
                     {queryState.table && (
-                      <button
-                        onClick={resetBuilder}
-                        className="px-2 py-1 text-xs bg-foreground/5 hover:bg-foreground/10 active:bg-foreground/15 active:scale-95 border border-foreground/10 rounded transition-all font-mono text-foreground/60 hover:text-foreground flex items-center gap-1.5"
-                        title="Reset"
-                      >
-                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                        </svg>
-                        <span className="hidden sm:inline">Reset</span>
-                      </button>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={handleShareQuery}
+                          className="px-2 py-1 text-xs bg-foreground/5 hover:bg-foreground/10 active:bg-foreground/15 active:scale-95 border border-foreground/10 rounded transition-all font-mono text-foreground/60 hover:text-foreground flex items-center gap-1.5"
+                          title="Share query via URL"
+                        >
+                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                          </svg>
+                          <span className="hidden sm:inline">Share</span>
+                        </button>
+                        <button
+                          onClick={resetBuilder}
+                          className="px-2 py-1 text-xs bg-foreground/5 hover:bg-foreground/10 active:bg-foreground/15 active:scale-95 border border-foreground/10 rounded transition-all font-mono text-foreground/60 hover:text-foreground flex items-center gap-1.5"
+                          title="Reset"
+                        >
+                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                          </svg>
+                          <span className="hidden sm:inline">Reset</span>
+                        </button>
+                      </div>
                     )}
                   </div>
 
@@ -212,6 +296,26 @@ export default function Home() {
                       onChange={updateTable}
                     />
 
+                    {/* INSERT-specific UI */}
+                    {queryState.table && queryState.queryType === "INSERT" && (
+                      <>
+                        {/* Table Structure Visualizer */}
+                        <TableStructureVisualizer
+                          tableName={queryState.table}
+                          selectedColumns={[]}
+                          selectedGroupBy={[]}
+                        />
+
+                        {/* INSERT Value Builder */}
+                        <InsertValueBuilder
+                          table={queryState.table}
+                          insertValues={queryState.insertValues}
+                          onChange={updateInsertValues}
+                        />
+                      </>
+                    )}
+
+                    {/* SELECT-specific UI */}
                     {queryState.table && queryState.queryType === "SELECT" && (
                       <>
                         {/* Table Structure Visualizer - NEW! */}
@@ -225,6 +329,20 @@ export default function Home() {
                           table={queryState.table}
                           selectedColumns={queryState.columns}
                           onChange={updateColumns}
+                          joins={queryState.joins}
+                        />
+
+                        {/* DISTINCT Toggle */}
+                        <DistinctToggle
+                          value={queryState.distinct}
+                          onChange={updateDistinct}
+                        />
+
+                        {/* JOINs Builder */}
+                        <JoinBuilder
+                          baseTable={queryState.table}
+                          joins={queryState.joins}
+                          onChange={updateJoins}
                         />
 
                         {/* Advanced Filters - Collapsible */}
@@ -433,6 +551,25 @@ export default function Home() {
 
         {/* Footer */}
         <Footer />
+
+        {/* Share Success Toast */}
+        {shareToast && (
+          <div className="fixed bottom-6 right-6 z-50 animate-in fade-in slide-in-from-bottom-4 duration-300">
+            <div className="px-4 py-3 bg-green-500 text-white rounded-lg shadow-lg flex items-center gap-3">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <div>
+                <p className="text-sm font-semibold">URL Copied!</p>
+                <p className="text-xs opacity-90">Share this link to load your query</p>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
+
+      {/* Welcome Tutorial - Outside main container for proper fixed positioning */}
+      {showTutorial && <WelcomeTutorial onComplete={handleTutorialComplete} />}
+    </>
   );
 }

@@ -6,6 +6,9 @@
 import * as factories from './factories';
 import { WhereCondition, OrderByClause } from '@/features/sql-builder/types';
 
+// Re-export JOIN executor
+export { executeJoins, getColumnValue as getJoinColumnValue } from './join-executor';
+
 // Cache for generated data
 const dataCache: Record<string, any[]> = {};
 
@@ -63,6 +66,28 @@ export function clearCache(tableName?: string): void {
 }
 
 /**
+ * Get column value handling table-prefixed columns (e.g., "users.name")
+ */
+function getColumnValue(row: any, column: string): any {
+  // Try direct access first (handles both prefixed and non-prefixed)
+  if (row[column] !== undefined) {
+    return row[column];
+  }
+  
+  // If column doesn't have table prefix, try to find it in any table
+  if (!column.includes('.')) {
+    const keys = Object.keys(row);
+    for (const key of keys) {
+      if (key.endsWith(`.${column}`)) {
+        return row[key];
+      }
+    }
+  }
+  
+  return undefined;
+}
+
+/**
  * Apply WHERE conditions to data
  */
 export function applyWhere(data: any[], whereConditions: WhereCondition[]): any[] {
@@ -72,7 +97,7 @@ export function applyWhere(data: any[], whereConditions: WhereCondition[]): any[
     let result = true;
     
     whereConditions.forEach((condition, index) => {
-      const columnValue = row[condition.column];
+      const columnValue = getColumnValue(row, condition.column);
       let conditionMet = false;
       
       // Evaluate condition based on operator
@@ -150,8 +175,8 @@ export function applyOrderBy(data: any[], orderBy: OrderByClause[]): any[] {
   
   return [...data].sort((a, b) => {
     for (const order of orderBy) {
-      const aVal = a[order.column];
-      const bVal = b[order.column];
+      const aVal = getColumnValue(a, order.column);
+      const bVal = getColumnValue(b, order.column);
       
       // Handle null/undefined
       if (aVal == null && bVal == null) continue;

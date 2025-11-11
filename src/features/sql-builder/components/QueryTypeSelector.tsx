@@ -20,18 +20,6 @@ export default function QueryTypeSelector({ value, onChange }: QueryTypeSelector
       description: "Add records",
       tooltip: "Use INSERT to add new rows to a table. Creates new data entries."
     },
-    { 
-      value: "UPDATE", 
-      label: "UPDATE", 
-      description: "Modify records",
-      tooltip: "Use UPDATE to change existing data. Modifies values in existing rows."
-    },
-    { 
-      value: "DELETE", 
-      label: "DELETE", 
-      description: "Remove records",
-      tooltip: "Use DELETE to remove rows from a table. Permanently deletes data."
-    },
   ];
 
   return (
@@ -40,10 +28,10 @@ export default function QueryTypeSelector({ value, onChange }: QueryTypeSelector
         Query Type
         <HelpTooltip 
           title="Query Types Explained"
-          content="SELECT reads data, INSERT adds new data, UPDATE modifies existing data, DELETE removes data. Start with SELECT to learn the basics!"
+          content="SELECT reads data from tables (most common). INSERT adds new rows. Start with SELECT to learn the basics!"
         />
       </label>
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+      <div className="grid grid-cols-2 gap-2">
         {queryTypes.map((type) => (
           <button
             key={type.value}

@@ -17,5 +17,7 @@ export {
   applyOrderBy,
   applyPagination,
   executeQuery,
-  clearCache
+  clearCache,
+  executeJoins,
+  getJoinColumnValue
 } from './mock-data';

@@ -35,6 +35,7 @@ export default function QueryVisualizations({
 
   // Check if query has features worth visualizing
   const hasVisualizableFeatures = 
+    (queryState.joins && queryState.joins.length > 0) ||
     queryState.whereConditions.length > 0 ||
     queryState.orderBy.length > 0 ||
     (queryState.aggregates && queryState.aggregates.length > 0) ||

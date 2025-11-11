@@ -60,16 +60,21 @@ export interface HavingCondition {
 export interface QueryState {
   queryType: QueryType;
   table: string;
+  
+  // SELECT-specific fields
   columns: string[];
-  aggregates: AggregateColumn[]; // NEW: Aggregate functions
-  distinct: boolean; // NEW: DISTINCT keyword
+  aggregates: AggregateColumn[];
+  distinct: boolean;
   whereConditions: WhereCondition[];
   joins: JoinClause[];
-  groupBy: string[]; // NEW: GROUP BY columns
-  having: HavingCondition[]; // NEW: HAVING conditions
+  groupBy: string[];
+  having: HavingCondition[];
   orderBy: OrderByClause[];
   limit: number | null;
   offset: number | null;
+  
+  // INSERT-specific fields
+  insertValues: Record<string, string>; // { columnName: value }
 }
 
 // Sample table schemas for demo

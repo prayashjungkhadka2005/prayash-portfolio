@@ -1,10 +1,11 @@
 "use client";
 
-import { QueryState } from "@/features/sql-builder/types";
+import { QueryState, SAMPLE_TABLES } from "@/features/sql-builder/types";
 import { useState, useMemo, useEffect } from "react";
 import { generateSQL, explainQuery } from "@/features/sql-builder/utils/sql-generator";
-import { getMockData, applyWhere, applyOrderBy, applyPagination } from "@/features/sql-builder/utils/mock-data-generator";
+import { getMockData, applyWhere, applyOrderBy, applyPagination, executeJoins, getJoinColumnValue } from "@/features/sql-builder/utils/mock-data-generator";
 import { exportToCSV, exportToJSON, exportToSQL, copyAsJSON, copyAsCSV, copyAsTable } from "@/features/sql-builder/utils/export-utils";
+import { isInsertQueryValid } from "@/features/sql-builder/utils/insert-validator";
 import { useToast } from "@/features/sql-builder/hooks/useToast";
 import Toast from "@/features/sql-builder/components/ui/Toast";
 
@@ -38,8 +39,15 @@ export default function QueryPreview({ queryState, onAutoFix, onRowCountsChange,
   const mockResults = useMemo(() => {
     if (!queryState.table) return [];
     
-    // Get all mock data for table
-    let data = getMockData(queryState.table);
+    // INSERT queries don't return results (show success message instead)
+    if (queryState.queryType === "INSERT") {
+      return [];
+    }
+    
+    // Get all mock data for table (with JOINs if present)
+    let data = queryState.joins && queryState.joins.length > 0
+      ? executeJoins(queryState.table, queryState.joins)
+      : getMockData(queryState.table);
     
     // Apply WHERE filters
     data = applyWhere(data, queryState.whereConditions);
@@ -52,7 +60,7 @@ export default function QueryPreview({ queryState, onAutoFix, onRowCountsChange,
       data.forEach(row => {
         // Create group key from groupBy columns
         const groupKey = queryState.groupBy && queryState.groupBy.length > 0
-          ? queryState.groupBy.map(col => String(row[col] ?? '')).join('|||')
+          ? queryState.groupBy.map(col => String(getJoinColumnValue(row, col) ?? '')).join('|||')
           : 'all';
         
         if (!groups[groupKey]) {
@@ -82,25 +90,27 @@ export default function QueryPreview({ queryState, onAutoFix, onRowCountsChange,
               if (agg.column === '*') {
                 result[columnName] = rows.length;
               } else {
-                result[columnName] = rows.filter(r => r[agg.column] != null).length;
+                result[columnName] = rows.filter(r => getJoinColumnValue(r, agg.column) != null).length;
               }
               break;
             case 'SUM':
-              result[columnName] = rows.reduce((sum, r) => sum + (isNaN(Number(r[agg.column])) ? 0 : Number(r[agg.column])), 0);
+              result[columnName] = rows.reduce((sum, r) => sum + (isNaN(Number(getJoinColumnValue(r, agg.column))) ? 0 : Number(getJoinColumnValue(r, agg.column))), 0);
               break;
             case 'AVG':
-              const values = rows.map(r => (isNaN(Number(r[agg.column])) ? 0 : Number(r[agg.column])));
+              const values = rows.map(r => (isNaN(Number(getJoinColumnValue(r, agg.column))) ? 0 : Number(getJoinColumnValue(r, agg.column))));
               result[columnName] = values.length > 0 
                 ? values.reduce((a, b) => a + b, 0) / values.length 
                 : 0;
               break;
             case 'MIN':
-              const minValues = rows.map(r => (isNaN(Number(r[agg.column])) ? Infinity : Number(r[agg.column])));
-              result[columnName] = minValues.length > 0 ? Math.min(...minValues) : 0;
+              const minValues = rows.map(r => (isNaN(Number(getJoinColumnValue(r, agg.column))) ? Infinity : Number(getJoinColumnValue(r, agg.column))));
+              const minResult = minValues.length > 0 ? Math.min(...minValues) : 0;
+              result[columnName] = minResult === Infinity ? 0 : minResult; // If all NaN, return 0
               break;
             case 'MAX':
-              const maxValues = rows.map(r => (isNaN(Number(r[agg.column])) ? -Infinity : Number(r[agg.column])));
-              result[columnName] = maxValues.length > 0 ? Math.max(...maxValues) : 0;
+              const maxValues = rows.map(r => (isNaN(Number(getJoinColumnValue(r, agg.column))) ? -Infinity : Number(getJoinColumnValue(r, agg.column))));
+              const maxResult = maxValues.length > 0 ? Math.max(...maxValues) : 0;
+              result[columnName] = maxResult === -Infinity ? 0 : maxResult; // If all NaN, return 0
               break;
           }
         });
@@ -109,9 +119,9 @@ export default function QueryPreview({ queryState, onAutoFix, onRowCountsChange,
         queryState.columns.forEach(col => {
           if (queryState.groupBy && !queryState.groupBy.includes(col)) {
             // For non-grouped columns, take first value (SQL would require aggregation)
-            result[col] = rows[0]?.[col];
+            result[col] = rows[0] ? getJoinColumnValue(rows[0], col) : undefined;
           } else if (!queryState.groupBy || queryState.groupBy.length === 0) {
-            result[col] = rows[0]?.[col];
+            result[col] = rows[0] ? getJoinColumnValue(rows[0], col) : undefined;
           }
         });
         
@@ -167,13 +177,28 @@ export default function QueryPreview({ queryState, onAutoFix, onRowCountsChange,
         data = data.map(row => {
           const filtered: any = {};
           queryState.columns.forEach(col => {
-            if (col in row) {
-              filtered[col] = row[col];
+            // Handle both prefixed and non-prefixed columns
+            const value = getJoinColumnValue(row, col);
+            if (value !== undefined) {
+              filtered[col] = value;
             }
           });
           return filtered;
         });
       }
+    }
+    
+    // Apply DISTINCT (remove duplicate rows)
+    if (queryState.distinct && data.length > 0) {
+      const seen = new Set<string>();
+      data = data.filter(row => {
+        const key = JSON.stringify(row);
+        if (seen.has(key)) {
+          return false;
+        }
+        seen.add(key);
+        return true;
+      });
     }
     
     // Apply ORDER BY (after grouping for aggregate queries)
@@ -199,7 +224,15 @@ export default function QueryPreview({ queryState, onAutoFix, onRowCountsChange,
   const rowCounts = useMemo(() => {
     if (!queryState.table) return { total: 0, afterWhere: 0, afterGroupBy: 0, final: 0 };
     
-    let data = getMockData(queryState.table);
+    // INSERT queries don't have row counts
+    if (queryState.queryType === "INSERT") {
+      return { total: 0, afterWhere: 0, afterGroupBy: 0, final: 0 };
+    }
+    
+    // Get data (with JOINs if present)
+    let data = queryState.joins && queryState.joins.length > 0
+      ? executeJoins(queryState.table, queryState.joins)
+      : getMockData(queryState.table);
     const total = data.length;
     
     // After WHERE
@@ -212,7 +245,7 @@ export default function QueryPreview({ queryState, onAutoFix, onRowCountsChange,
       const groups: Record<string, any[]> = {};
       data.forEach(row => {
         const groupKey = queryState.groupBy && queryState.groupBy.length > 0
-          ? queryState.groupBy.map(col => String(row[col] ?? '')).join('|||')
+          ? queryState.groupBy.map(col => String(getJoinColumnValue(row, col) ?? '')).join('|||')
           : 'all';
         if (!groups[groupKey]) groups[groupKey] = [];
         groups[groupKey].push(row);
@@ -400,25 +433,50 @@ export default function QueryPreview({ queryState, onAutoFix, onRowCountsChange,
             onAutoFix={onAutoFix}
           />
 
-          {/* Results Table with Export */}
-          <ResultsTable
-            mockResults={mockResults}
-            totalMatchingRows={totalMatchingRows}
-            hasQuery={hasQuery}
-            onCopyTable={handleCopyAsTable}
-            exportMenu={
-              <ExportMenu
-                mockResults={mockResults}
-                tableName={queryState.table || 'query'}
-                onExportCSV={handleExportCSV}
-                onExportJSON={handleExportJSON}
-                onExportSQL={handleExportSQL}
-                onCopyJSON={handleCopyAsJSON}
-                onCopyCSV={handleCopyAsCSV}
-                onCopyTable={handleCopyAsTable}
-              />
-            }
-          />
+          {/* Results Table with Export - Only for SELECT queries */}
+          {queryState.queryType === "SELECT" ? (
+            <ResultsTable
+              mockResults={mockResults}
+              totalMatchingRows={totalMatchingRows}
+              hasQuery={hasQuery}
+              onCopyTable={handleCopyAsTable}
+              exportMenu={
+                <ExportMenu
+                  mockResults={mockResults}
+                  tableName={queryState.table || 'query'}
+                  onExportCSV={handleExportCSV}
+                  onExportJSON={handleExportJSON}
+                  onExportSQL={handleExportSQL}
+                  onCopyJSON={handleCopyAsJSON}
+                  onCopyCSV={handleCopyAsCSV}
+                  onCopyTable={handleCopyAsTable}
+                />
+              }
+            />
+          ) : queryState.queryType === "INSERT" ? (
+            /* INSERT Success Message - Only show if valid (use centralized validator) */
+            isInsertQueryValid(queryState) ? (
+              <div className="p-6 bg-green-500/10 border border-green-500/20 rounded-lg">
+                <div className="flex items-start gap-3">
+                  <svg className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <div className="flex-1">
+                    <h4 className="text-sm font-semibold text-green-600 dark:text-green-400 mb-1 font-mono">
+                      Ready to INSERT
+                    </h4>
+                    <p className="text-xs text-green-600/80 dark:text-green-400/80 font-mono leading-relaxed">
+                      This query will insert 1 new row into the <span className="font-bold">{queryState.table}</span> table. 
+                      In a real database, this would add the data permanently. 
+                      {Object.keys(queryState.insertValues).filter(k => queryState.insertValues[k]).length > 0 && (
+                        <> You&apos;re setting {Object.keys(queryState.insertValues).filter(k => queryState.insertValues[k]).length} column{Object.keys(queryState.insertValues).filter(k => queryState.insertValues[k]).length > 1 ? 's' : ''}.</>
+                      )}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ) : null
+          ) : null}
         </>
       ) : (
         /* Empty State */

@@ -1,6 +1,7 @@
 "use client";
 
-import { QueryState } from "@/features/sql-builder/types";
+import { QueryState, SAMPLE_TABLES } from "@/features/sql-builder/types";
+import { validateInsertQuery } from "@/features/sql-builder/utils/insert-validator";
 import { motion, AnimatePresence } from "framer-motion";
 import { useMemo } from "react";
 
@@ -20,6 +21,37 @@ interface ValidationIssue {
 export default function ValidationBanner({ queryState, onAutoFix }: ValidationBannerProps) {
   const issues = useMemo(() => {
     const problems: ValidationIssue[] = [];
+
+    // PRIORITY 0 - INSERT VALIDATION: Use separate validator for cleaner code
+    if (queryState.queryType === "INSERT") {
+      const validation = validateInsertQuery(queryState);
+      
+      if (validation && validation.hasErrors) {
+        // Missing required fields
+        if (validation.missingRequired.length > 0) {
+          problems.push({
+            type: "error",
+            title: "Missing Required Fields",
+            message: `${validation.missingRequired.length} required field${validation.missingRequired.length > 1 ? 's are' : ' is'} empty: ${validation.missingRequired.join(', ')}. Fill in all required fields to insert a row.`,
+            fixType: undefined,
+            fixLabel: undefined
+          });
+          return problems;
+        }
+        
+        // Type errors
+        if (validation.typeErrors.length > 0) {
+          problems.push({
+            type: "error",
+            title: "Invalid Data Types",
+            message: `${validation.typeErrors.length} field${validation.typeErrors.length > 1 ? 's have' : ' has'} wrong data type: ${validation.typeErrors.slice(0, 2).join('; ')}${validation.typeErrors.length > 2 ? '...' : ''}`,
+            fixType: undefined,
+            fixLabel: undefined
+          });
+          return problems;
+        }
+      }
+    }
 
     // PRIORITY 1 - CRITICAL ERROR: HAVING without GROUP BY
     // This is the most critical issue - show ONLY this if it exists

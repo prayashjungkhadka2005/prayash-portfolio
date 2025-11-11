@@ -31,7 +31,29 @@ export default function VisualQueryFlow({
       color: "blue"
     });
 
-    // Step 2: WHERE (if exists)
+    // Step 1.5: JOIN (if exists)
+    if (queryState.joins && queryState.joins.length > 0) {
+      const joinCount = queryState.joins.length;
+      const joinTables = queryState.joins.map(j => j.table).join(", ");
+      flowSteps.push({
+        label: "JOIN",
+        description: `${joinCount} JOIN${joinCount > 1 ? 's' : ''} with ${joinTables}`,
+        rows: totalRows,
+        color: "cyan"
+      });
+    }
+
+    // Step 2: DISTINCT (if enabled)
+    if (queryState.distinct) {
+      flowSteps.push({
+        label: "DISTINCT",
+        description: "Remove duplicate rows",
+        rows: totalRows, // Before WHERE, so use totalRows
+        color: "teal"
+      });
+    }
+
+    // Step 3: WHERE (if exists)
     if (queryState.whereConditions.length > 0) {
       const conditions = queryState.whereConditions.length;
       flowSteps.push({
@@ -42,7 +64,7 @@ export default function VisualQueryFlow({
       });
     }
 
-    // Step 3: GROUP BY (if exists)
+    // Step 4: GROUP BY (if exists)
     if (queryState.groupBy && queryState.groupBy.length > 0) {
       const groups = queryState.groupBy.join(", ");
       flowSteps.push({
@@ -53,7 +75,7 @@ export default function VisualQueryFlow({
       });
     }
 
-    // Step 4: Aggregates (if exists)
+    // Step 5: Aggregates (if exists)
     if (queryState.aggregates && queryState.aggregates.length > 0) {
       const funcs = queryState.aggregates.map(a => a.function).join(", ");
       flowSteps.push({
@@ -64,7 +86,7 @@ export default function VisualQueryFlow({
       });
     }
 
-    // Step 5: HAVING (if exists)
+    // Step 6: HAVING (if exists)
     if (queryState.having && queryState.having.length > 0) {
       flowSteps.push({
         label: "HAVING",
@@ -74,7 +96,7 @@ export default function VisualQueryFlow({
       });
     }
 
-    // Step 6: ORDER BY (if exists)
+    // Step 7: ORDER BY (if exists)
     if (queryState.orderBy && queryState.orderBy.length > 0) {
       const sorts = queryState.orderBy.map(o => `${o.column} ${o.direction}`).join(", ");
       flowSteps.push({
@@ -85,7 +107,7 @@ export default function VisualQueryFlow({
       });
     }
 
-    // Step 7: LIMIT (if exists)
+    // Step 8: LIMIT (if exists)
     if (queryState.limit) {
       flowSteps.push({
         label: "LIMIT",
@@ -101,6 +123,8 @@ export default function VisualQueryFlow({
   // Harmonized color accents using primary/accent palette
   const colorMap: Record<string, string> = {
     blue: "border-foreground/10 text-foreground",
+    cyan: "border-foreground/10 text-foreground",
+    teal: "border-foreground/10 text-foreground",
     orange: "border-foreground/10 text-foreground",
     purple: "border-foreground/10 text-foreground",
     green: "border-foreground/10 text-foreground",

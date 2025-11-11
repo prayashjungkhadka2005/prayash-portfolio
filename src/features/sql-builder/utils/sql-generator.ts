@@ -13,7 +13,7 @@ export function generateSQL(state: QueryState): string {
     case "SELECT":
       return generateSelectQuery(state);
     case "INSERT":
-      return "-- INSERT query builder coming soon!";
+      return generateInsertQuery(state);
     case "UPDATE":
       return "-- UPDATE query builder coming soon!";
     case "DELETE":
@@ -61,6 +61,15 @@ function generateSelectQuery(state: QueryState): string {
 
   // FROM clause
   parts.push(`FROM ${state.table}`);
+
+  // JOIN clauses
+  if (state.joins && state.joins.length > 0) {
+    state.joins.forEach(join => {
+      if (join.table && join.onLeft && join.onRight) {
+        parts.push(`${join.type} JOIN ${join.table} ON ${join.onLeft} = ${join.onRight}`);
+      }
+    });
+  }
 
   // WHERE clause
   if (state.whereConditions.length > 0) {
@@ -180,6 +189,33 @@ export function explainQuery(state: QueryState): string {
       const distinct = state.distinct ? "unique " : "";
       parts.push(`This query retrieves ${distinct}${columns} from the "${state.table}" table.`);
     }
+    
+    // JOIN explanation
+    if (state.joins && state.joins.length > 0) {
+      const joinDescriptions = state.joins.map(join => {
+        const joinType = join.type === "INNER" ? "matching rows from" : 
+                        join.type === "LEFT" ? "all rows from base table and matching rows from" :
+                        join.type === "RIGHT" ? "all rows from joined table and matching rows from" :
+                        "all rows from both";
+        return `${join.type} JOIN with "${join.table}" (${joinType})`;
+      });
+      parts.push(`\nJoins: ${joinDescriptions.join(", ")}.`);
+    }
+  } else if (state.queryType === "INSERT") {
+    const filledColumns = Object.keys(state.insertValues).filter(col => state.insertValues[col] && state.insertValues[col].trim() !== '');
+    
+    if (filledColumns.length === 0) {
+      parts.push(`This query will insert a new row into the "${state.table}" table.`);
+      parts.push("\nFill in the column values to complete the INSERT statement.");
+    } else {
+      parts.push(`This query inserts a new row into the "${state.table}" table.`);
+      parts.push(`\nIt sets ${filledColumns.length} column${filledColumns.length > 1 ? 's' : ''}:`);
+      filledColumns.forEach(col => {
+        const value = state.insertValues[col];
+        const displayValue = value.length > 50 ? value.substring(0, 50) + '...' : value;
+        parts.push(`  • ${col} = ${displayValue}`);
+      });
+    }
   }
 
   // WHERE conditions
@@ -216,16 +252,18 @@ export function explainQuery(state: QueryState): string {
     parts.push(`\nResults are sorted by ${orderDesc}.`);
   }
 
-  // LIMIT/OFFSET
-  if (state.limit !== null && state.limit > 0) {
-    parts.push(`\nIt returns up to ${state.limit} results.`);
-    if (state.offset !== null && state.offset > 0) {
-      parts.push(` Starting from record #${state.offset + 1} (skipping first ${state.offset}).`);
-    }
-  } else {
-    parts.push(`\nNote: Preview shows first 20 rows by default. Add LIMIT to control this.`);
-    if (state.offset !== null && state.offset > 0) {
-      parts.push(` Starting from record #${state.offset + 1} (skipping first ${state.offset}).`);
+  // LIMIT/OFFSET (only for SELECT queries)
+  if (state.queryType === "SELECT") {
+    if (state.limit !== null && state.limit > 0) {
+      parts.push(`\nIt returns up to ${state.limit} results.`);
+      if (state.offset !== null && state.offset > 0) {
+        parts.push(` Starting from record #${state.offset + 1} (skipping first ${state.offset}).`);
+      }
+    } else {
+      parts.push(`\nNote: Preview shows first 20 rows by default. Add LIMIT to control this.`);
+      if (state.offset !== null && state.offset > 0) {
+        parts.push(` Starting from record #${state.offset + 1} (skipping first ${state.offset}).`);
+      }
     }
   }
 
@@ -250,5 +288,45 @@ function operatorToEnglish(operator: string): string {
     "IS NOT NULL": "is not null",
   };
   return map[operator] || operator;
+}
+
+/**
+ * Generate INSERT query
+ */
+function generateInsertQuery(state: QueryState): string {
+  const parts: string[] = [];
+  
+  // Get columns and values
+  const columns = Object.keys(state.insertValues).filter(col => state.insertValues[col] && state.insertValues[col].trim() !== '');
+  
+  if (columns.length === 0) {
+    return `-- INSERT INTO ${state.table}\n-- Add values to insert a new row`;
+  }
+  
+  const values = columns.map(col => {
+    const value = state.insertValues[col];
+    // Format value based on type
+    if (value === 'NULL' || value === 'null') {
+      return 'NULL';
+    }
+    // Check if it's a number
+    if (!isNaN(Number(value)) && value.trim() !== "") {
+      return value;
+    }
+    // Check if it's a boolean
+    if (value.toLowerCase() === 'true' || value.toLowerCase() === 'false') {
+      return value.toUpperCase();
+    }
+    // Default: string with quotes (escape single quotes)
+    return `'${value.replace(/'/g, "''")}'`;
+  });
+  
+  // INSERT INTO table (columns)
+  parts.push(`INSERT INTO ${state.table} (${columns.join(", ")})`);
+  
+  // VALUES (values)
+  parts.push(`VALUES (${values.join(", ")})`);
+  
+  return parts.join("\n") + ";";
 }
 

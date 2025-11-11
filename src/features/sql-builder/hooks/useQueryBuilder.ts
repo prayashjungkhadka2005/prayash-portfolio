@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { QueryState, WhereCondition, OrderByClause, AggregateColumn, HavingCondition } from "../types";
+import { QueryState, WhereCondition, OrderByClause, AggregateColumn, HavingCondition, JoinClause } from "../types";
 
 /**
  * Custom hook for managing SQL query builder state
@@ -19,6 +19,7 @@ export function useQueryBuilder(initialState?: Partial<QueryState>) {
     orderBy: [],
     limit: null,
     offset: null,
+    insertValues: {},
     ...initialState,
   });
 
@@ -85,6 +86,16 @@ export function useQueryBuilder(initialState?: Partial<QueryState>) {
     setQueryState(prev => ({ ...prev, distinct }));
   }, []);
 
+  // Update INSERT values
+  const updateInsertValues = useCallback((insertValues: Record<string, string>) => {
+    setQueryState(prev => ({ ...prev, insertValues }));
+  }, []);
+
+  // Update JOINs
+  const updateJoins = useCallback((joins: JoinClause[]) => {
+    setQueryState(prev => ({ ...prev, joins }));
+  }, []);
+
   // Reset to initial state
   const reset = useCallback(() => {
     setQueryState({
@@ -100,6 +111,7 @@ export function useQueryBuilder(initialState?: Partial<QueryState>) {
       orderBy: [],
       limit: null,
       offset: null,
+      insertValues: {},
     });
   }, []);
 
@@ -118,6 +130,7 @@ export function useQueryBuilder(initialState?: Partial<QueryState>) {
       orderBy: [],
       limit: null,
       offset: null,
+      insertValues: {},
       ...templateState,
     });
   }, []);
@@ -131,11 +144,13 @@ export function useQueryBuilder(initialState?: Partial<QueryState>) {
     updateAggregates,
     updateDistinct,
     updateWhereConditions,
+    updateJoins,
     updateGroupBy,
     updateHaving,
     updateOrderBy,
     updateLimit,
     updateOffset,
+    updateInsertValues,
     reset,
     loadTemplate,
   };

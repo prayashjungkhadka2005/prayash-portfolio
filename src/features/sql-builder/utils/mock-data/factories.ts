@@ -79,7 +79,8 @@ export function createProduct(id: number): any {
  */
 export function createOrder(id: number, totalUsers: number): any {
   const userId = G.random.int(1, totalUsers);
-  const itemsCount = G.random.int(1, 5);
+  const productId = G.random.int(1, 100); // Reference to products table
+  const quantity = G.random.int(1, 5);
   const subtotal = G.generateTransaction.amount(20, 500);
   const tax = G.generateTransaction.tax(subtotal);
   const shipping = G.random.pick([0, 5.99, 9.99, 14.99, 0]);
@@ -97,20 +98,22 @@ export function createOrder(id: number, totalUsers: number): any {
   
   return {
     id,
-    order_number: G.generateTransaction.orderId(),
     user_id: userId,
+    product_id: productId,
+    quantity,
+    total: parseFloat(total.toFixed(2)),
     status,
+    payment_method: G.random.pick(C.PAYMENT_METHODS),
+    created_at: G.random.date(createdDaysAgo).toISOString(),
+    // Extra fields (not in schema but useful)
+    order_number: G.generateTransaction.orderId(),
     subtotal: parseFloat(subtotal.toFixed(2)),
     tax: parseFloat(tax.toFixed(2)),
     shipping: parseFloat(shipping.toFixed(2)),
-    total: parseFloat(total.toFixed(2)),
-    items_count: itemsCount,
-    payment_method: G.random.pick(C.PAYMENT_METHODS),
     payment_status: isPaid ? 'paid' : 'pending',
     shipping_method: G.random.pick(C.SHIPPING_METHODS),
     tracking_number: status === 'shipped' || status === 'delivered' ? `TRK${G.generateId.numeric(12)}` : null,
     notes: G.random.bool(0.2) ? 'Customer requested gift wrapping' : null,
-    created_at: G.random.date(createdDaysAgo).toISOString(),
     updated_at: G.random.date(Math.min(createdDaysAgo, 7)).toISOString(),
   };
 }
