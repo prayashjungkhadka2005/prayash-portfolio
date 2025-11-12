@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { SAMPLE_TABLES } from "@/features/sql-builder/types";
+import ColumnTypeIndicator from "./ColumnTypeIndicator";
 
 interface InsertValueBuilderProps {
   table: string;
@@ -97,14 +98,7 @@ export default function InsertValueBuilder({ table, insertValues, onChange }: In
               <span className="text-xs font-mono font-semibold text-foreground">
                 {column.name}
               </span>
-              <span className="text-[10px] font-mono text-foreground/40 uppercase">
-                {column.type}
-              </span>
-              {!column.nullable && (
-                <span className="px-1.5 py-0.5 bg-red-500/10 text-red-600 dark:text-red-400 text-[10px] font-mono font-bold rounded">
-                  required
-                </span>
-              )}
+              <ColumnTypeIndicator column={column} compact={true} />
             </div>
 
             {/* Value Input - Full Width */}

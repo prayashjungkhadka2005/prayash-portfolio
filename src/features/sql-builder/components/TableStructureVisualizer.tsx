@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { SAMPLE_TABLES } from "@/features/sql-builder/types";
 import { useMemo } from "react";
+import ColumnTypeIndicator from "./ColumnTypeIndicator";
 
 interface TableStructureVisualizerProps {
   tableName: string;
@@ -87,19 +88,10 @@ export default function TableStructureVisualizer({
                     </svg>
                   </div>
                   <div className="min-w-0">
-                    <div className="font-mono font-semibold text-sm text-foreground truncate">
+                    <div className="font-mono font-semibold text-sm text-foreground truncate mb-1">
                       {column.name}
                     </div>
-                    <div className="flex items-center gap-2 mt-0.5">
-                      <span className="text-[10px] font-mono text-foreground/50">
-                        {column.type}
-                      </span>
-                      {!column.nullable && (
-                        <span className="text-[9px] px-1.5 py-0.5 bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20 rounded font-mono">
-                          REQUIRED
-                        </span>
-                      )}
-                    </div>
+                    <ColumnTypeIndicator column={column} compact={true} />
                   </div>
                 </div>
 

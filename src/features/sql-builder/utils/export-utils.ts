@@ -169,6 +169,97 @@ export async function copyAsCSV(data: any[]): Promise<void> {
 }
 
 /**
+ * Export to Markdown table format
+ */
+export function exportToMarkdown(data: any[], filename: string = 'query-results.md'): void {
+  if (data.length === 0) {
+    throw new Error('No data to export');
+  }
+
+  const markdown = dataToMarkdown(data);
+  downloadFile(markdown, filename, 'text/markdown');
+}
+
+/**
+ * Convert data to Markdown table
+ */
+export function dataToMarkdown(data: any[]): string {
+  if (data.length === 0) return '';
+
+  const headers = Object.keys(data[0]);
+  
+  // Create header row
+  const headerRow = '| ' + headers.join(' | ') + ' |';
+  
+  // Create separator row
+  const separatorRow = '| ' + headers.map(() => '---').join(' | ') + ' |';
+  
+  // Create data rows
+  const dataRows = data.map(row => {
+    return '| ' + headers.map(h => {
+      const value = row[h];
+      if (value == null) return '';
+      return String(value).replace(/\|/g, '\\|'); // Escape pipes
+    }).join(' | ') + ' |';
+  });
+  
+  return [headerRow, separatorRow, ...dataRows].join('\n');
+}
+
+/**
+ * Copy data to clipboard as Markdown table
+ */
+export async function copyAsMarkdown(data: any[]): Promise<void> {
+  if (data.length === 0) {
+    throw new Error('No data to copy');
+  }
+
+  const markdown = dataToMarkdown(data);
+  await navigator.clipboard.writeText(markdown);
+}
+
+/**
+ * Export to Excel-compatible CSV (with BOM for proper UTF-8 encoding in Excel)
+ */
+export function exportToExcelCSV(data: any[], filename: string = 'query-results.csv'): void {
+  if (data.length === 0) {
+    throw new Error('No data to export');
+  }
+
+  const headers = Object.keys(data[0]);
+  
+  // Create CSV header row
+  const csvHeaders = headers.join(',');
+  
+  // Create CSV data rows
+  const csvRows = data.map(row => {
+    return headers.map(header => {
+      const value = row[header];
+      
+      // Handle null/undefined
+      if (value == null) return '';
+      
+      // Handle strings with commas, quotes, or newlines
+      const stringValue = String(value);
+      if (stringValue.includes(',') || stringValue.includes('"') || stringValue.includes('\n')) {
+        return `"${stringValue.replace(/"/g, '""')}"`;
+      }
+      
+      return stringValue;
+    }).join(',');
+  });
+  
+  // Combine header and rows
+  const csv = [csvHeaders, ...csvRows].join('\r\n'); // Use \r\n for Excel compatibility
+  
+  // Add BOM for proper UTF-8 encoding in Excel
+  const csvWithBOM = '\uFEFF' + csv;
+  
+  // Download file with Excel MIME type
+  downloadFile(csvWithBOM, filename, 'text/csv;charset=utf-8;');
+}
+
+/**
  * Helper function to trigger file download
  */
 function downloadFile(content: string, filename: string, mimeType: string): void {

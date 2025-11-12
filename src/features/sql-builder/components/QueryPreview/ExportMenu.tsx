@@ -8,9 +8,11 @@ interface ExportMenuProps {
   onExportCSV: () => void;
   onExportJSON: () => void;
   onExportSQL: () => void;
+  onExportMarkdown: () => void;
   onCopyJSON: () => void;
   onCopyCSV: () => void;
   onCopyTable: () => void;
+  onCopyMarkdown: () => void;
 }
 
 export default function ExportMenu({
@@ -19,9 +21,11 @@ export default function ExportMenu({
   onExportCSV,
   onExportJSON,
   onExportSQL,
+  onExportMarkdown,
   onCopyJSON,
   onCopyCSV,
   onCopyTable,
+  onCopyMarkdown,
 }: ExportMenuProps) {
   const [showExportMenu, setShowExportMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -103,6 +107,15 @@ export default function ExportMenu({
               </svg>
               <span className="text-foreground">SQL Inserts</span>
             </button>
+            <button
+              onClick={() => handleExport(onExportMarkdown)}
+              className="w-full text-left px-4 py-2 hover:bg-foreground/5 active:bg-foreground/10 active:scale-[0.98] transition-all flex items-center gap-3 text-sm font-mono"
+            >
+              <svg className="w-4 h-4 text-foreground/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+              </svg>
+              <span className="text-foreground">Markdown Table</span>
+            </button>
 
             <div className="border-t border-foreground/10 my-1"></div>
 
@@ -136,6 +149,15 @@ export default function ExportMenu({
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
               </svg>
               <span className="text-foreground">As Table</span>
+            </button>
+            <button
+              onClick={() => handleExport(onCopyMarkdown)}
+              className="w-full text-left px-4 py-2 hover:bg-foreground/5 active:bg-foreground/10 active:scale-[0.98] transition-all flex items-center gap-3 text-sm font-mono"
+            >
+              <svg className="w-4 h-4 text-foreground/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+              </svg>
+              <span className="text-foreground">As Markdown</span>
             </button>
           </div>
         </div>

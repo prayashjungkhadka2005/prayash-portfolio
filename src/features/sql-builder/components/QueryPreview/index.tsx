@@ -4,7 +4,7 @@ import { QueryState, SAMPLE_TABLES } from "@/features/sql-builder/types";
 import { useState, useMemo, useEffect } from "react";
 import { generateSQL, explainQuery } from "@/features/sql-builder/utils/sql-generator";
 import { getMockData, applyWhere, applyOrderBy, applyPagination, executeJoins, getJoinColumnValue } from "@/features/sql-builder/utils/mock-data-generator";
-import { exportToCSV, exportToJSON, exportToSQL, copyAsJSON, copyAsCSV, copyAsTable } from "@/features/sql-builder/utils/export-utils";
+import { exportToCSV, exportToJSON, exportToSQL, exportToMarkdown, copyAsJSON, copyAsCSV, copyAsTable, copyAsMarkdown } from "@/features/sql-builder/utils/export-utils";
 import { isInsertQueryValid } from "@/features/sql-builder/utils/insert-validator";
 import { useToast } from "@/features/sql-builder/hooks/useToast";
 import Toast from "@/features/sql-builder/components/ui/Toast";
@@ -14,6 +14,7 @@ import QueryExplanation from "./QueryExplanation";
 import ResultsTable from "./ResultsTable";
 import ExportMenu from "./ExportMenu";
 import ValidationBanner from "./ValidationBanner";
+import SQLDisplay from "@/features/sql-builder/components/SQLDisplay";
 
 interface QueryPreviewProps {
   queryState: QueryState;
@@ -334,9 +335,27 @@ export default function QueryPreview({ queryState, onAutoFix, onRowCountsChange,
   const handleCopyAsTable = async () => {
     try {
       await copyAsTable(mockResults);
-      // No toast needed - button shows "copied" feedback
+      showToast('Copied as table to clipboard!', 'success');
     } catch (error) {
-      console.error('Copy failed:', error);
+      showToast('Failed to copy: No data available', 'error');
+    }
+  };
+
+  const handleExportMarkdown = () => {
+    try {
+      exportToMarkdown(mockResults, `${queryState.table || 'query'}-results.md`);
+      showToast('Exported to Markdown successfully!', 'success');
+    } catch (error) {
+      showToast('Failed to export: No data available', 'error');
+    }
+  };
+
+  const handleCopyAsMarkdown = async () => {
+    try {
+      await copyAsMarkdown(mockResults);
+      showToast('Copied as Markdown to clipboard!', 'success');
+    } catch (error) {
+      showToast('Failed to copy: No data available', 'error');
     }
   };
 
@@ -413,12 +432,12 @@ export default function QueryPreview({ queryState, onAutoFix, onRowCountsChange,
       {/* Content */}
       {hasQuery ? (
         <>
-          {/* SQL Code Display */}
+          {/* SQL Code Display with Syntax Highlighting */}
           <div className="relative mb-4">
-            <pre className="p-4 bg-[#1e1e1e] dark:bg-black border border-gray-700 dark:border-gray-800 rounded overflow-x-auto text-xs font-mono leading-relaxed text-gray-100">
-              <code className="language-sql">{sqlQuery}</code>
-            </pre>
-            <div className="absolute top-2 right-2 text-[10px] text-gray-500 font-mono uppercase tracking-wider">sql</div>
+            <div className="p-4 bg-[#fafafa] dark:bg-black/40 border border-foreground/10 rounded overflow-x-auto">
+              <SQLDisplay sql={sqlQuery} />
+            </div>
+            <div className="absolute top-2 right-2 text-[10px] text-foreground/40 font-mono uppercase tracking-wider">sql</div>
           </div>
 
           {/* Query Explanation */}
@@ -447,9 +466,11 @@ export default function QueryPreview({ queryState, onAutoFix, onRowCountsChange,
                   onExportCSV={handleExportCSV}
                   onExportJSON={handleExportJSON}
                   onExportSQL={handleExportSQL}
+                  onExportMarkdown={handleExportMarkdown}
                   onCopyJSON={handleCopyAsJSON}
                   onCopyCSV={handleCopyAsCSV}
                   onCopyTable={handleCopyAsTable}
+                  onCopyMarkdown={handleCopyAsMarkdown}
                 />
               }
             />

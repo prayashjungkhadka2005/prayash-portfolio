@@ -96,7 +96,7 @@ export default function OrderByBuilder({ table, orderBy, onChange }: OrderByBuil
                 >
                   {tableSchema.columns.map((col) => (
                     <option key={col.name} value={col.name}>
-                      {col.name}
+                      {col.name} ({col.type})
                     </option>
                   ))}
                 </select>

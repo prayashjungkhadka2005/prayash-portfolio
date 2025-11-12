@@ -1,6 +1,7 @@
 import { SAMPLE_TABLES, JoinClause } from "@/features/sql-builder/types";
 import { useMemo } from "react";
 import HelpTooltip from "./HelpTooltip";
+import ColumnTypeIndicator from "./ColumnTypeIndicator";
 
 interface ColumnsSelectorProps {
   table: string;
@@ -92,14 +93,14 @@ export default function ColumnsSelector({ table, selectedColumns, onChange, join
       </div>
 
       <div className="space-y-4">
-        {allTables.map((tbl) => {
+        {allTables.map((tbl, tableIndex) => {
           if (!tbl.schema) return null;
           
           const isJoinedTable = tbl.name !== table;
           const prefix = joins && joins.length > 0 && isJoinedTable ? `${tbl.name}.` : '';
           
           return (
-            <div key={tbl.name}>
+            <div key={`${tbl.name}-${tableIndex}`}>
               {/* Table header (only show for joined tables) */}
               {isJoinedTable && (
                 <div className="mb-2 flex items-center gap-2">
@@ -128,7 +129,7 @@ export default function ColumnsSelector({ table, selectedColumns, onChange, join
                       aria-pressed={isSelected}
                     >
                       <div className="flex items-center gap-2">
-                        <div className={`w-3.5 h-3.5 rounded border flex items-center justify-center ${
+                        <div className={`w-3.5 h-3.5 rounded border flex items-center justify-center flex-shrink-0 ${
                           isSelected ? "border-foreground bg-foreground" : "border-foreground/20"
                         }`}>
                           {isSelected && (
@@ -138,12 +139,10 @@ export default function ColumnsSelector({ table, selectedColumns, onChange, join
                           )}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="text-xs font-medium text-foreground truncate font-mono">
+                          <div className="text-xs font-medium text-foreground truncate font-mono mb-0.5">
                             {isJoinedTable ? columnName : column.name}
                           </div>
-                          <div className="text-[10px] text-foreground/40 font-mono">
-                            {column.type}
-                          </div>
+                          <ColumnTypeIndicator column={column} compact={true} />
                         </div>
                       </div>
                     </button>

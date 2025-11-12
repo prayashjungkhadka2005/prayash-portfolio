@@ -124,7 +124,7 @@ export default function AggregateSelector({ table, aggregates, onChange }: Aggre
                   )}
                   {(aggregate.function === "COUNT" ? tableSchema.columns : numericColumns).map((col) => (
                     <option key={col.name} value={col.name}>
-                      {col.name}
+                      {col.name} ({col.type})
                     </option>
                   ))}
                 </select>

@@ -127,7 +127,7 @@ export default function WhereClauseBuilder({ table, conditions, onChange }: Wher
                 >
                   {tableSchema.columns.map((col) => (
                     <option key={col.name} value={col.name}>
-                      {col.name}
+                      {col.name} ({col.type})
                     </option>
                   ))}
                 </select>

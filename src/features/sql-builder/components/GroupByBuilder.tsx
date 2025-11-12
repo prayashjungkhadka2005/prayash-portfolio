@@ -1,6 +1,7 @@
 import { SAMPLE_TABLES } from "@/features/sql-builder/types";
 import { useMemo } from "react";
 import HelpTooltip from "./HelpTooltip";
+import ColumnTypeIndicator from "./ColumnTypeIndicator";
 
 interface GroupByBuilderProps {
   table: string;
@@ -96,9 +97,10 @@ export default function GroupByBuilder({ table, groupBy, onChange }: GroupByBuil
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="text-xs font-medium text-foreground truncate font-mono">
+                    <div className="text-xs font-medium text-foreground truncate font-mono mb-0.5">
                       {column.name}
                     </div>
+                    <ColumnTypeIndicator column={column} compact={true} />
                   </div>
                 </div>
               </button>
