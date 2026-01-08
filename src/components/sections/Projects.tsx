@@ -2,17 +2,18 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { 
-  SiNextdotjs, 
-  SiPostgresql, 
-  SiDocker, 
+import {
+  SiNextdotjs,
+  SiPostgresql,
+  SiDocker,
   SiMongodb,
   SiReact,
   SiNodedotjs,
   SiExpress,
   SiTailwindcss,
   SiStripe,
-  SiDotnet
+  SiDotnet,
+  SiOpenai
 } from "react-icons/si";
 import { FaAws, FaDatabase } from "react-icons/fa";
 
@@ -30,10 +31,19 @@ const techIcons: { [key: string]: any } = {
   "Express": SiExpress,
   "MongoDB": SiMongodb,
   "Tailwind CSS": SiTailwindcss,
+  "AI": SiOpenai,
 };
 
 export default function Projects() {
   const projects = [
+    {
+      title: "Fluxstack.io",
+      description: "AI-powered visual database schema designer. Generate production-ready SQL, Prisma, and TypeScript code instantly. Features real-time collaboration and AI copilot.",
+      tech: ["Next.js", "React", "PostgreSQL", "AI", "Tailwind CSS"],
+      link: "https://fluxstack.io",
+      image: "/projects/fluxstack.png",
+      type: "SaaS Product",
+    },
     {
       title: "Blue Sky Online Real Estate School",
       description: "Professional online course platform for Virginia real estate education. Features course management, user authentication, payment processing, and comprehensive admin dashboard.",
@@ -64,7 +74,7 @@ export default function Projects() {
     <section id="projects" className="relative py-20 px-6 overflow-hidden">
       {/* Background gradient */}
       <div className="absolute top-1/2 right-0 w-96 h-96 bg-accent/10 rounded-full filter blur-3xl -z-10"></div>
-      
+
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-5xl font-bold text-foreground mb-4">
@@ -75,7 +85,7 @@ export default function Projects() {
           </p>
         </div>
 
-        <motion.div 
+        <motion.div
           className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
           initial="hidden"
           whileInView="visible"
@@ -99,7 +109,7 @@ export default function Projects() {
             >
               {/* Gradient overlay */}
               <div className="absolute inset-0 bg-gradient-to-br from-primary/0 to-accent/0 group-hover:from-primary/10 group-hover:to-accent/10 transition-all"></div>
-              
+
               <div className="relative">
                 {/* Project Image */}
                 <div className="relative h-48 w-full overflow-hidden">

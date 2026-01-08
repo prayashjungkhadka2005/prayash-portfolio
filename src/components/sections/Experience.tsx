@@ -5,6 +5,17 @@ import { motion } from "framer-motion";
 export default function Experience() {
   const experiences = [
     {
+      company: "Fluxstack",
+      title: "Visual Database & Backend Builder",
+      role: "Founder & Lead Engineer",
+      period: "Dec 2025 - Present",
+      status: "Active Development",
+      type: "Product",
+      location: "Remote",
+      website: "https://fluxstack.io",
+      description: "Building the next generation of visual database design tools. Architecting the entire platform using Next.js, React Flow, and AI integration for automated schema generation.",
+    },
+    {
       company: "Streamline Berkshire Inc",
       title: "Blue Sky Online Real Estate School",
       role: "Full Stack & Team Management",
