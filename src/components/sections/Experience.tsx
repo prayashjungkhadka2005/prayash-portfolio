@@ -7,13 +7,13 @@ export default function Experience() {
     {
       company: "Streamline Berkshire Inc",
       title: "Blue Sky Online Real Estate School",
-      role: "Backend & Team Management",
-      period: "Feb 2025 - Present",
-      status: "In Progress",
+      role: "Full Stack & Team Management",
+      period: "Feb 2025 - Dec 2025",
+      status: "Completed",
       type: "Contract",
       location: "Virginia, USA",
       website: "https://www.blueskyonlinerealestateschool.org/",
-      description: "Leading backend development and team coordination for online real estate education platform with course management, payment processing, and admin dashboard.",
+      description: "Leading full stack development and team coordination for online real estate education platform with course management, payment processing, and admin dashboard.",
     },
     {
       company: "BrahmaByte Lab Pvt Ltd",
@@ -31,7 +31,7 @@ export default function Experience() {
     <section id="experience" className="relative py-20 px-6 overflow-hidden">
       {/* Background gradient */}
       <div className="absolute top-1/2 left-0 w-96 h-96 bg-primary/10 rounded-full filter blur-3xl -z-10"></div>
-      
+
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-5xl font-bold text-foreground mb-4">
@@ -66,7 +66,7 @@ export default function Experience() {
             >
               {/* Gradient overlay */}
               <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/0 to-accent/0 group-hover:from-primary/5 group-hover:to-accent/5 transition-all"></div>
-              
+
               <div className="relative">
                 <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-4">
                   <div className="flex-1">
@@ -80,7 +80,7 @@ export default function Experience() {
                         </span>
                       )}
                     </div>
-                    <a 
+                    <a
                       href={exp.website}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -106,7 +106,7 @@ export default function Experience() {
                       </p>
                     )}
                   </div>
-                  
+
                   <div className="flex flex-col items-start md:items-end gap-2">
                     <span className="px-3 py-1 backdrop-blur-sm bg-primary/10 border border-primary/20 text-primary text-xs font-medium rounded-full">
                       {exp.type}
@@ -121,7 +121,7 @@ export default function Experience() {
                     )}
                   </div>
                 </div>
-                
+
                 <p className="text-foreground/70 leading-relaxed">
                   {exp.description}
                 </p>
